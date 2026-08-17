@@ -14,6 +14,7 @@ import {
   Linkedin,
   ExternalLink,
   BookOpen,
+  Globe,
   Briefcase,
 } from "lucide-react";
 import ChangePasswordSection from "./ChangePasswordSection";
@@ -386,7 +387,9 @@ const Profile = () => {
               (user.socialLinks.google_scholar &&
                 user.socialLinks.google_scholar.trim() !== "") ||
               (user.socialLinks.orcid &&
-                user.socialLinks.orcid.trim() !== "")) && (
+                user.socialLinks.orcid.trim() !== "") ||
+              (user.socialLinks.portfolio &&
+                user.socialLinks.portfolio.trim() !== "")) && (
               <Card className="shadow-lg rounded-lg lg:col-span-2 border-0 bg-white">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-6">
@@ -477,6 +480,28 @@ const Profile = () => {
                             </p>
                             <p className="text-xs text-gray-500">
                               Research Identifier
+                            </p>
+                          </div>
+                        </a>
+                      )}
+                      {user.socialLinks.portfolio &&
+                      user.socialLinks.portfolio.trim() !== "" && (
+                        <a
+                          href={user.socialLinks.portfolio}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                        >
+                          <div className="p-2 bg-purple-600 rounded-lg group-hover:bg-purple-700 transition-colors">
+                            <Globe className="w-4 h-4 text-white" />
+                          </div>
+
+                          <div>
+                            <p className="font-semibold text-gray-800 group-hover:text-purple-600 transition-colors">
+                              Portfolio
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              Personal Website
                             </p>
                           </div>
                         </a>

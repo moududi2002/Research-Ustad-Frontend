@@ -106,6 +106,33 @@ export function SocialLinksSection({ register, errors }: UpdateInfoSocialLinksSe
             </p>
           )}
         </label>
+
+        <label className="space-y-1">
+          <span className="text-sm font-medium">Portfolio</span>
+            <Input
+              type="url"
+              {...register("portfolio", {
+                pattern: {
+                  value: /^https?:\/\/.+\..+/,
+                  message: "Please enter a valid Portfolio URL"
+                },
+                validate: (value) => {
+                  if (value && value.trim() !== "") {
+                    return /^https?:\/\/.+\..+/.test(value) || "Please enter a valid Portfolio URL";
+                  }
+                  return true;
+                }
+              })}
+              placeholder="Enter Portfolio URL"
+            />
+        {errors.portfolio && (
+          <p className="text-red-500 text-sm">
+            {errors.portfolio.message}
+          </p>
+        )}
+      </label>
+
+
       </div>
     </div>
   );

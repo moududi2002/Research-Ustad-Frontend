@@ -34,6 +34,7 @@ export interface UpdateInfoFormData {
   researchgate?: string;
   googleScholar?: string;
   orcid?: string;
+  portfolio?: string;
 
   // Citations
   citations?: number;

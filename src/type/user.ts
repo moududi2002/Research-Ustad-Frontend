@@ -28,6 +28,7 @@ export interface TUser {
     researchgate?: string;
     linkedin?: string;
     orcid?: string;
+    portfolio?: string;
   };
   expertise?: string[];
   awards?: string[];
@@ -65,6 +66,7 @@ export interface SocialLinks {
   researchgate?: string;
   linkedin?: string;
   orcid?: string;
+  portfolio?: string;
 }
 
 // Updated TResearchAssociate to match consolidated user model
@@ -98,6 +100,7 @@ export interface TResearchAssociate {
     researchgate?: string;
     linkedin?: string;
     orcid?: string;
+    portfolio?: string; 
   };
   expertise?: string[];
   awards?: string[];

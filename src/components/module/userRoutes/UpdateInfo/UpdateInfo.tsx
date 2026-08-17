@@ -59,6 +59,7 @@ const UpdateInfo = () => {
       researchgate: "",
       googleScholar: "",
       orcid: "",
+      portfolio: "",
       citations: 0,
       expertise: [],
       awards: [],
@@ -177,6 +178,8 @@ const UpdateInfo = () => {
         setValue("researchgate", data?.socialLinks?.researchgate || "");
         setValue("googleScholar", data?.socialLinks?.google_scholar || "");
         setValue("orcid", data?.socialLinks?.orcid || "");
+        setValue("portfolio", data?.socialLinks?.portfolio || "");
+
 
         // Citations - only set if data exists
         setValue("citations", data?.citations || 0);
@@ -307,12 +310,14 @@ const UpdateInfo = () => {
     const researchgate = cleanString(formData.researchgate);
     const googleScholar = cleanString(formData.googleScholar);
     const orcid = cleanString(formData.orcid);
+    const portfolio = cleanString(formData.portfolio);
 
     payload.socialLinks = {
       linkedin: linkedin,
       researchgate: researchgate,
       google_scholar: googleScholar,
       orcid: orcid,
+      portfolio: portfolio,
     };
 
     // Citations - always include (allow clearing)

@@ -11,7 +11,7 @@ import Image from "next/image";
 import MyResearch from "../MyReseraches/MyResearch";
 import { TPapers, TResearchAssociate } from "@/type";
 import OngoingProject from "../OngoingProject/OngoingProject";
-import { Linkedin } from "lucide-react";
+import { Linkedin, Globe } from "lucide-react";
 import { BsTwitter } from "react-icons/bs";
 import { FaFacebook } from "react-icons/fa";
 
@@ -113,6 +113,17 @@ const ProfileDetails = ({
                   className="p-2 bg-blue-700 text-white rounded-full hover:bg-blue-800 transition-all"
                 >
                   <Linkedin size={24} />
+                </a>
+              )}
+              {currentUser?.socialLinks?.portfolio && (
+                <a
+                  href={currentUser.socialLinks.portfolio}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-gray-700 text-white rounded-full hover:bg-gray-800 transition-all"
+                  title="Portfolio"
+                >
+                  <Globe size={24} />
                 </a>
               )}
             </div>

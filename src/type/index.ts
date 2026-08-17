@@ -47,6 +47,8 @@ export type TResearchAssociate = {
     researchgate: string;
     linkedin: string;
     orcid?: string;
+    portfolio?: string;
+
   };
   _id: string;
   role: string;
