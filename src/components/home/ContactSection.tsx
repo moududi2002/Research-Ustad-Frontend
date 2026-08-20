@@ -12,7 +12,7 @@ const contactInfo = [
   {
     icon: MapPin,
     title: "Our Location",
-    details: ["100 Bermuda Run Rd, Statesboro, GA 30458, USA"],
+    details: ["109 Harvey Drive, 084, Statesboro, GA 30458, USA"],
   },
   {
     icon: Mail,
@@ -22,7 +22,7 @@ const contactInfo = [
   {
     icon: Phone,
     title: "Phone",
-    details: ["(912) 794-1871"],
+    details: ["+1 (912) 794-1871"],
   },
   {
     icon: FaWhatsapp,

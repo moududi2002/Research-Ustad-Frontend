@@ -12,6 +12,8 @@ import {
   TeamMember,
 } from "./components";
 import { GetAllResearchAssociate } from "@/services/reserarchers";
+import { sortTeamLeadMembers } from "@/utils/teamMemberOrder";
+
 
 const TeamMembersPage = () => {
   const [members, setMembers] = useState<TeamMember[]>([]);
@@ -97,7 +99,8 @@ const TeamMembersPage = () => {
   }, []);
 
   // Filter and search members
-  const filteredMembers = members?.filter((member) => {
+
+  {/* const filteredMembers = members?.filter((member) => {
     const matchesSearch =
       member.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (member.designation || "")
@@ -116,6 +119,34 @@ const TeamMembersPage = () => {
 
     return matchesSearch && matchesFilter;
   });
+
+  */}
+
+  const filteredMembers = members?.filter((member) => {
+  const matchesSearch =
+    member.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (member.designation || "")
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase()) ||
+    member.current?.institution
+      ?.toLowerCase()
+      .includes(searchQuery.toLowerCase()) ||
+    member.expertise?.some((exp) =>
+      exp.toLowerCase().includes(searchQuery.toLowerCase())
+    ) ||
+    member.shortBio?.toLowerCase().includes(searchQuery.toLowerCase());
+
+  const matchesFilter =
+    selectedFilter === "all" || member.designation === selectedFilter;
+
+  return matchesSearch && matchesFilter;
+});
+
+const orderedFilteredMembers =
+  selectedFilter === "Team Lead"
+    ? sortTeamLeadMembers(filteredMembers)
+    : filteredMembers;
+
 
   // Handle page change
   const handlePageChange = (page: number) => {
@@ -200,7 +231,7 @@ const TeamMembersPage = () => {
                 </div>
                 
                 <TeamMembersGrid
-                  members={filteredMembers}
+                  members={orderedFilteredMembers}
                   currentPage={currentPage}
                   itemsPerPage={itemsPerPage}
                   onPageChange={handlePageChange}

@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Users, ChevronRight } from "lucide-react";
 import TeamMemberCard, { TeamMember } from "./TeamMemberCard";
 import { DESIGNATION_OPTIONS } from "@/constants/designations";
+import { sortTeamLeadMembers } from "src/utils/teamMemberOrder"
+
 
 interface TeamMembersSectionsProps {
   members: TeamMember[];
@@ -32,13 +34,63 @@ const TeamMembersSections = ({
   });
 
   // Group members by designation
-  const groupedMembers = DESIGNATION_OPTIONS?.reduce((acc, designation) => {
+  {/* const groupedMembers = DESIGNATION_OPTIONS?.reduce((acc, designation) => {
     const sectionMembers = filteredMembers?.filter(
       (member) => member.designation === designation
     );
     acc[designation] = sectionMembers;
     return acc;
   }, {} as Record<string, TeamMember[]>);
+  */}
+  
+  {/* const TEAM_LEAD_ORDER = [
+  "6971f1c09bf3269a4c43457d", // Anichur Rahman
+  "6971f2039bf3269a4c43458b", // Abul Ala Moududi
+  "6a3779b6fb8ac5182ec2c1a6", // MD. RAIHAN ALI
+  "697345ba9bf3269a4c434af8", // Md Tanjum An Tashrif
+  "697345e09bf3269a4c434b00", // Shahariar Hossain Mahir
+  "6973459c9bf3269a4c434aee", // Mohammad Abdul Ahad
+  "6973457c9bf3269a4c434ae4", // Airin Afroj Aishi
+];
+
+const groupedMembers = DESIGNATION_OPTIONS?.reduce((acc, designation) => {
+  let sectionMembers = filteredMembers?.filter(
+    (member) => member.designation === designation
+  );
+
+  if (designation === "Team Lead") {
+    const orderMap = new Map(
+      TEAM_LEAD_ORDER.map((id, index) => [id, index])
+    );
+
+    sectionMembers = [...sectionMembers].sort((a, b) => {
+      const aIndex = orderMap.get(a.id) ?? Number.MAX_SAFE_INTEGER;
+      const bIndex = orderMap.get(b.id) ?? Number.MAX_SAFE_INTEGER;
+
+      return aIndex - bIndex;
+    });
+  }
+
+  acc[designation] = sectionMembers;
+
+  return acc;
+}, {} as Record<string, TeamMember[]>);
+*/}
+
+const groupedMembers = DESIGNATION_OPTIONS?.reduce((acc, designation) => {
+  let sectionMembers = filteredMembers?.filter(
+    (member) => member.designation === designation
+  );
+
+  if (designation === "Team Lead") {
+    sectionMembers = sortTeamLeadMembers(sectionMembers);
+  }
+
+  acc[designation] = sectionMembers;
+
+  return acc;
+}, {} as Record<string, TeamMember[]>);
+
 
   // Handle section expansion
   const toggleSection = (designation: string) => {

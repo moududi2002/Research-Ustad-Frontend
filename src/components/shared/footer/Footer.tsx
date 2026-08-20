@@ -90,7 +90,7 @@ const Footer = () => {
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-brand-secondary mt-1 flex-shrink-0" />
                 <p className="text-gray-300 text-sm leading-relaxed">
-                  100 Bermuda Run Rd, Statesboro, GA 30458, USA
+                  109 Harvey Drive, 084, Statesboro, GA 30458, USA
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -109,7 +109,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-brand-secondary flex-shrink-0" />
-                <p className="text-gray-300 text-sm">Phone: (912) 794-1871</p>
+                <p className="text-gray-300 text-sm">Phone: +1 (912) 794-1871</p>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-brand-secondary flex-shrink-0" />
