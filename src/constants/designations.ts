@@ -1,8 +1,8 @@
 // Designation options for research team members
 export const DESIGNATION_OPTIONS = [
-  "Advisor",
-  "Mentor", 
   "Team Lead",
+  "Advisor",
+  "Mentor",
   "Research Associate",
   "Junior Researcher",
 ] as const;

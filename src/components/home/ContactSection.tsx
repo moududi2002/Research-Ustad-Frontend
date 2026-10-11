@@ -12,7 +12,7 @@ const contactInfo = [
   {
     icon: MapPin,
     title: "Our Location",
-    details: ["109 Harvey Drive, 084, Statesboro, GA 30458, USA"],
+    details: ["Dhaka, Bangladesh"],
   },
   {
     icon: Mail,

@@ -11,7 +11,7 @@ const page = () => {
         </h3>
         <div className="h-96 bg-muted rounded-xl overflow-hidden">
           <iframe
-            src="https://www.google.com/maps?q=109+Harvey+Dr+%23084,+Statesboro,+GA+30458,+USA&output=embed"
+            src="https://www.google.com/maps?q=Dhaka,+Bangladesh&output=embed"
             width="100%"
             height="100%"
             style={{ border: 0 }}
