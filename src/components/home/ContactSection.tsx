@@ -1,33 +1,39 @@
+// src/components/home/ContactSection.tsx
 "use client";
 import { useState } from "react";
 import { Button, Container, SectionHeader } from "@/components/ui/core";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone, Send } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { toast } from "sonner";
 import { CreateContact } from "@/services/contact";
+import { Reveal } from "@/components/ui/Reveal";
 
 const contactInfo = [
   {
     icon: MapPin,
     title: "Our Location",
     details: ["Dhaka, Bangladesh"],
+    href: undefined,
   },
   {
     icon: Mail,
     title: "Email Us",
     details: ["info@researchustad.org"],
+    href: "mailto:info@researchustad.org",
   },
   {
     icon: Phone,
     title: "Phone",
     details: ["+1 (912) 794-1871"],
+    href: "tel:+19127941871",
   },
   {
     icon: FaWhatsapp,
     title: "WhatsApp",
     details: ["+880 1724-653054"],
+    href: "https://wa.me/8801724653054",
   },
 ];
 
@@ -44,27 +50,17 @@ const ContactSection = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate form
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.subject ||
-      !formData.message
-    ) {
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
       toast.error("Please fill in all fields");
       return;
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       toast.error("Please enter a valid email address");
@@ -72,152 +68,180 @@ const ContactSection = () => {
     }
 
     setIsSubmitting(true);
-
     try {
       await CreateContact(formData);
       toast.success("Message sent successfully! We'll get back to you soon.");
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error: any) {
       console.error("Contact Form Error:", error);
-      if (error.message) {
-        toast.error(error.message);
-      } else {
-        toast.error("Failed to send message. Please try again later.");
-      }
+      toast.error(error?.message || "Failed to send message. Please try again later.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <section className="py-10 bg-gray-50">
+    <section className="py-20 lg:py-28 bg-brand-surface">
       <Container>
-        {/* Section Header */}
-        <SectionHeader title="Get In Touch" />
+        <Reveal>
+          <SectionHeader
+            eyebrow="Contact"
+            title="Get In Touch"
+            description="Have questions about our research, mentorship, or higher-study guidance? We'd love to hear from you."
+          />
+        </Reveal>
 
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-5">
-            {/* Left Column - Contact Form */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8">
-              <h3 className="text-2xl font-bold text-brand-primary mb-6">
-                Send Us a Message
+        <div className="grid lg:grid-cols-5 gap-6 lg:gap-8 mt-14 max-w-6xl mx-auto">
+          {/* ─── Left: Contact Info ─── */}
+          <Reveal className="lg:col-span-2 space-y-4">
+            <div className="bg-white rounded-2xl border border-brand-border p-7 lg:p-8 h-full">
+              <h3 className="text-xl font-semibold text-brand-primary mb-2">
+                Contact Information
               </h3>
+              <p className="text-sm text-brand-muted leading-relaxed mb-7">
+                Reach out through any channel below. Our team typically responds
+                within 24 hours.
+              </p>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Your Name
+              <div className="space-y-5">
+                {contactInfo.map((info) => {
+                  const Icon = info.icon;
+                  const content = (
+                    <div className="flex items-start gap-4 group">
+                      <div className="w-11 h-11 rounded-xl bg-brand-surface border border-brand-border flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:bg-brand-primary group-hover:border-brand-primary">
+                        <Icon className="w-5 h-5 text-brand-primary transition-colors group-hover:text-white" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="text-xs font-semibold uppercase tracking-wider text-brand-muted mb-1">
+                          {info.title}
+                        </h4>
+                        {info.details.map((detail, i) => (
+                          <p
+                            key={i}
+                            className="text-sm font-medium text-brand-primary break-words"
+                          >
+                            {detail}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  );
+
+                  return info.href ? (
+                    <a
+                      key={info.title}
+                      href={info.href}
+                      target={info.href.startsWith("http") ? "_blank" : undefined}
+                      rel={info.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                      className="block rounded-xl -mx-2 px-2 py-1 hover:bg-brand-surface/50 transition-colors"
+                    >
+                      {content}
+                    </a>
+                  ) : (
+                    <div key={info.title}>{content}</div>
+                  );
+                })}
+              </div>
+            </div>
+          </Reveal>
+
+          {/* ─── Right: Contact Form ─── */}
+          <Reveal delay={120} className="lg:col-span-3">
+            <form
+              onSubmit={handleSubmit}
+              className="bg-white rounded-2xl border border-brand-border p-7 lg:p-8 space-y-5"
+            >
+              <div>
+                <h3 className="text-xl font-semibold text-brand-primary mb-1">
+                  Send Us a Message
+                </h3>
+                <p className="text-sm text-brand-muted">
+                  Fill out the form and we'll be in touch shortly.
+                </p>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-5">
+                <div className="space-y-2">
+                  <label htmlFor="name" className="block text-sm font-medium text-brand-primary">
+                    Your Name <span className="text-red-500">*</span>
                   </label>
                   <Input
+                    id="name"
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="Enter your name"
-                    className="border-gray-200 focus:border-brand-primary focus:ring-brand-primary/20"
+                    className="border-brand-border focus-visible:border-brand-secondary focus-visible:ring-brand-secondary/20"
                     required
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Email Address
+                <div className="space-y-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-brand-primary">
+                    Email Address <span className="text-red-500">*</span>
                   </label>
                   <Input
+                    id="email"
                     name="email"
                     type="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder="Enter your email"
-                    className="border-gray-200 focus:border-brand-primary focus:ring-brand-primary/20"
+                    placeholder="you@example.com"
+                    className="border-brand-border focus-visible:border-brand-secondary focus-visible:ring-brand-secondary/20"
                     required
                   />
                 </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Subject
-                  </label>
-                  <Input
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleInputChange}
-                    placeholder="Enter subject"
-                    className="border-gray-200 focus:border-brand-primary focus:ring-brand-primary/20"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Your Message
-                  </label>
-                  <Textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    placeholder="Tell us about your research needs"
-                    rows={6}
-                    className="border-gray-200 focus:border-brand-primary focus:ring-brand-primary/20 resize-none"
-                    required
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="lg"
-                  className="w-full"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "SENDING..." : "SEND MESSAGE"}
-                </Button>
-              </form>
-            </div>
-
-            {/* Right Column - Contact Information */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8">
-              <h3 className="text-2xl font-bold text-brand-primary mb-4">
-                Contact Information
-              </h3>
-
-              <p className="text-gray-600 mb-8 leading-relaxed">
-                Have questions about our services or want to discuss your
-                research needs? Our team is here to help.
-              </p>
-
-              <div className="space-y-6">
-                {contactInfo?.map((info, index) => (
-                  <div key={index} className="flex items-start space-x-4">
-                    <div className="w-10 h-10 bg-brand-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <info.icon className="h-5 w-5 text-brand-primary" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-brand-primary mb-1">
-                        {info.title}
-                      </h4>
-                      {info.details?.map((detail, detailIndex) => (
-                        <p
-                          key={detailIndex}
-                          className="text-sm text-gray-600 leading-relaxed"
-                        >
-                          {info.title === "Email Us" ? (
-                            <a
-                              href={`mailto:${detail}`}
-                              className="text-brand-primary underline"
-                            >
-                              {detail}
-                            </a>
-                          ) : (
-                            detail
-                          )}
-                        </p>
-                      ))}
-                    </div>
-                  </div>
-                ))}
               </div>
-            </div>
-          </div>
+
+              <div className="space-y-2">
+                <label htmlFor="subject" className="block text-sm font-medium text-brand-primary">
+                  Subject <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  id="subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  placeholder="What is this regarding?"
+                  className="border-brand-border focus-visible:border-brand-secondary focus-visible:ring-brand-secondary/20"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="message" className="block text-sm font-medium text-brand-primary">
+                  Your Message <span className="text-red-500">*</span>
+                </label>
+                <Textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  placeholder="Tell us about your research needs..."
+                  rows={5}
+                  className="border-brand-border focus-visible:border-brand-secondary focus-visible:ring-brand-secondary/20 resize-none"
+                  required
+                />
+              </div>
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                className="w-full group"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>Sending...</>
+                ) : (
+                  <>
+                    Send Message
+                    <Send className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </>
+                )}
+              </Button>
+            </form>
+          </Reveal>
         </div>
       </Container>
     </section>

@@ -1,3 +1,4 @@
+// src/components/shared/Navbar/Navbar.tsx
 "use client";
 import { DroopDown } from "@/components/ui/core/DropDown/DropDown";
 import { Button } from "@/components/ui/core";
@@ -11,7 +12,6 @@ import {
 import {
   Sheet,
   SheetContent,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { getCurrentUser, logout } from "@/services/AuthService";
@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 
 const navLinks = [
   { name: "Home", href: "/" },
+  { name: 'Our Services', href: '/services' },
   { name: "Team Member", href: "/team-members" },
   { name: "Course", href: "/course" },
   { name: "Event", href: "/event" },
@@ -32,14 +33,10 @@ const navLinks = [
   { name: "Contact Us", href: "/contact" },
 ];
 
-// Research Wing submenu items for mobile
 const researchWingItems = [
   { name: "Publication", href: "/published" },
   { name: "Ongoing Projects", href: "/ongoing-projects" },
-  {
-    name: "International Conference",
-    href: "/international-conferences",
-  },
+  { name: "International Conference", href: "/international-conferences" },
   { name: "Achievements", href: "/achievements" },
 ];
 
@@ -51,12 +48,8 @@ type UserToken = {
   exp: number;
 };
 
-// Helper function to convert JWT payload to UserToken
 const convertJwtToUserToken = (jwtPayload: any): UserToken | null => {
-  if (!jwtPayload || typeof jwtPayload !== "object") {
-    return null;
-  }
-
+  if (!jwtPayload || typeof jwtPayload !== "object") return null;
   return {
     id: jwtPayload.sub || jwtPayload.id || "",
     email: jwtPayload.email || "",
@@ -74,48 +67,31 @@ const Navbar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const isActive = (href: string) => {
-    if (href === "/") {
-      return pathname === "/";
-    }
-    return pathname.startsWith(href);
-  };
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
-  const toggleCategory = (category: string) => {
+  const toggleCategory = (category: string) =>
     setExpandedCategories((prev) =>
       prev.includes(category)
-        ? prev?.filter((cat) => cat !== category)
+        ? prev.filter((cat) => cat !== category)
         : [...prev, category]
     );
-  };
 
-  const isCategoryExpanded = (category: string) => {
-    return expandedCategories.includes(category);
-  };
+  const isCategoryExpanded = (category: string) =>
+    expandedCategories.includes(category);
 
   useEffect(() => {
     const fetchData = async () => {
       const jwtPayload = await getCurrentUser();
-      const userToken = convertJwtToUserToken(jwtPayload);
-      setUser(userToken);
+      setUser(convertJwtToUserToken(jwtPayload));
     };
-
     fetchData();
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolling(true);
-      } else {
-        setScrolling(false);
-      }
-    };
-
+    const handleScroll = () => setScrolling(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleLogOut = () => {
@@ -126,49 +102,44 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-50 transition-all duration-300 ${
+      className={cn(
+        "sticky top-0 z-50 transition-all duration-300",
         scrolling
-          ? "bg-white/95 shadow-lg backdrop-blur-md border-b border-gray-100"
-          : "bg-white/90 backdrop-blur-sm"
-      }`}
+          ? "bg-white/95 backdrop-blur-md shadow-[0_2px_20px_-8px_rgba(30,58,95,0.15)] border-b border-brand-border"
+          : "bg-white border-b border-transparent"
+      )}
     >
-      <div className="max-w-7xl mx-auto hidden lg:flex justify-between items-center px-6">
-        <Link href="/" className="group flex items-center gap-2">
+      {/* ─── Desktop ─── */}
+      <div className="max-w-7xl mx-auto hidden lg:flex justify-between items-center px-6 h-20">
+        {/* Logo */}
+        <Link href="/" className="group flex items-center gap-2 shrink-0">
           <Image
             src="/logo.png"
-            alt="logo"
+            alt="Research Ustad"
             width={1000}
             height={100}
-            className="w-20 h-20"
+            priority
+            className="w-14 h-14 transition-transform duration-300 group-hover:scale-105"
           />
-          <h2 className="font-bold text-[22px] flex items-center transition-colors text-brand-primary group-hover:text-brand-secondary duration-300">
+          <h2 className="font-serif font-bold text-[22px] flex items-center text-brand-primary tracking-tight">
             Research
-            <span className="group-hover:text-brand-primary text-brand-secondary transition-colors duration-300 ml-[5px]">
-              Ustad
-            </span>
+            <span className="text-brand-secondary ml-1">Ustad</span>
           </h2>
         </Link>
 
-        <div className="flex items-center space-x-8">
-          {/* Desktop Navigation Menu */}
-          <div>
-            <DroopDown />
-          </div>
+        {/* Nav links + Login */}
+        <div className="flex items-center gap-6">
+          <DroopDown />
 
-          {/* Modern Login Button */}
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="primary"
-                  size="md"
-                  className="flex items-center gap-2 cursor-pointer"
-                >
+                <Button variant="primary" size="sm" className="gap-2">
                   <User className="w-4 h-4" />
                   Dashboard
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-48 mt-2">
+              <DropdownMenuContent align="end" className="w-48 mt-2">
                 <DropdownMenuItem className="cursor-pointer">
                   <Link
                     href={getDashboardUrl(user?.role || "")}
@@ -190,11 +161,7 @@ const Navbar = () => {
             </DropdownMenu>
           ) : (
             <Link href="/login">
-              <Button
-                variant="primary"
-                size="md"
-                className="flex items-center gap-2 cursor-pointer"
-              >
+              <Button variant="primary" size="sm" className="gap-2">
                 <LogIn className="w-4 h-4" />
                 Login
               </Button>
@@ -203,144 +170,128 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
-      <div className="lg:hidden block">
-        <div className=" bg-white/95 backdrop-blur-md shadow-md border-b border-gray-100">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="group">
+      {/* ─── Mobile ─── */}
+      <div className="lg:hidden">
+        <div className="bg-white/95 backdrop-blur-md">
+          <div className="flex justify-between items-center px-4 h-16">
+            <Link href="/" className="flex items-center gap-2">
               <Image
                 src="/logo.png"
-                alt="logo"
+                alt="Research Ustad"
                 width={1000}
                 height={100}
-                className="w-20 h-20"
+                priority
+                className="w-12 h-12"
               />
-              {/* <h2 className="font-bold text-brand-secondary text-[20px] flex items-center transition-colors duration-300">
-                Research
-                <span className="text-brand-primary group-hover:text-brand-secondary transition-colors duration-300">
-                  Ustad
-                </span>
-              </h2> */}
+              <h2 className="font-serif font-bold text-lg text-brand-primary">
+                Research<span className="text-brand-secondary ml-1">Ustad</span>
+              </h2>
             </Link>
-            <div className="flex items-center gap-3">
-              {/* Mobile Login Button */}
+
+            <div className="flex items-center gap-2">
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="flex items-center gap-1 cursor-pointer"
-                    >
-                      <User className="w-3 h-3" />
-                      <span className="text-sm">Dashboard</span>
+                    <Button variant="primary" size="sm" className="gap-1">
+                      <User className="w-3.5 h-3.5" />
+                      <span className="text-xs">Dashboard</span>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-40 mt-2">
+                  <DropdownMenuContent align="end" className="w-44 mt-2">
                     <DropdownMenuItem className="cursor-pointer">
                       <Link
                         href={getDashboardUrl(user?.role || "")}
                         className="flex items-center w-full text-sm"
                       >
-                        <User className="w-3 h-3 mr-2" />
+                        <User className="w-3.5 h-3.5 mr-2" />
                         Dashboard
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={handleLogOut}
-                      className="cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50 text-sm"
+                      className="cursor-pointer text-red-600 hover:bg-red-50 text-sm"
                     >
-                      <LogIn className="w-3 h-3 mr-2" />
+                      <LogIn className="w-3.5 h-3.5 mr-2" />
                       Logout
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
                 <Link href="/login">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    className="flex items-center gap-1"
-                  >
-                    <LogIn className="w-3 h-3" />
-                    <span className="text-sm">Login</span>
+                  <Button variant="primary" size="sm" className="gap-1">
+                    <LogIn className="w-3.5 h-3.5" />
+                    <span className="text-xs">Login</span>
                   </Button>
                 </Link>
               )}
 
-              {/* Mobile Menu */}
               <Sheet open={open} onOpenChange={setOpen}>
-                <SheetTrigger className="focus:outline-none cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
+                <SheetTrigger className="p-2 hover:bg-brand-surface rounded-lg transition-colors">
                   {open ? <X size={20} /> : <Menu size={20} />}
                 </SheetTrigger>
                 <SheetContent side="left" className="w-80 p-0 bg-white">
                   <div className="flex flex-col h-full">
-                    {/* Header */}
-                    <div className="p-4 border-b border-gray-200">
-                      <h2 className="text-lg font-semibold text-gray-800">
+                    <div className="p-4 border-b border-brand-border">
+                      <h2 className="font-serif text-lg font-semibold text-brand-primary">
                         Menu
                       </h2>
                     </div>
 
-                    {/* Navigation Menu */}
                     <div className="flex-1 overflow-y-auto">
                       <nav className="py-2">
-                        {/* Main Menu Items */}
-
-                        {navLinks?.map((link, index) => (
+                        {navLinks.map((link, index) => (
                           <div key={link.name}>
-                            <div className="border-b border-gray-100">
-                              <Link
-                                href={link.href}
-                                className={cn(
-                                  "flex items-center justify-between px-4 py-3 text-sm font-medium transition-colors duration-200",
-                                  isActive(link.href)
-                                    ? "text-brand-secondary bg-brand-primary/5"
-                                    : "text-gray-700 hover:text-brand-secondary hover:bg-gray-50"
-                                )}
-                                onClick={() => setOpen(false)}
-                              >
-                                <span>{link.name}</span>
-                              </Link>
-                            </div>
+                            <Link
+                              href={link.href}
+                              onClick={() => setOpen(false)}
+                             className={cn(
+                                'flex items-center justify-between px-4 py-3 text-sm font-medium transition-colors duration-200',
+                                link.href === '/services'
+                                  ? 'mx-3 my-2 rounded-xl bg-gradient-to-r from-[#093a5a] to-[#087e55] !text-white shadow-md font-extrabold'
+                                  : isActive(link.href)
+                                  ? 'text-brand-secondary bg-brand-primary/5'
+                                  : 'text-gray-700 hover:text-brand-secondary hover:bg-gray-50'
+                              )}
+                            >
+                              <span>{link.name}</span>
+                            </Link>
 
-                            {/* Insert Research Wing right after Home */}
                             {index === 0 && (
-                              <div className="border-b border-gray-100">
+                              <div className="border-b border-brand-border/50">
                                 <button
                                   onClick={() => toggleCategory("researchWing")}
                                   className={cn(
-                                    "flex items-center justify-between w-full px-4 py-3 text-sm font-medium transition-colors duration-200",
+                                    "flex items-center justify-between w-full px-4 py-3 text-sm font-medium transition-colors",
                                     isActive("/published") ||
                                       isActive("/ongoing-projects") ||
                                       isActive("/international-conferences") ||
                                       isActive("/achievements")
-                                      ? "text-brand-secondary bg-brand-primary/5"
-                                      : "text-gray-700 hover:text-brand-secondary hover:bg-gray-50"
+                                      ? "text-brand-secondary bg-brand-surface"
+                                      : "text-brand-ink hover:text-brand-secondary hover:bg-brand-surface/60"
                                   )}
                                 >
                                   <span>Research Wing</span>
                                   {isCategoryExpanded("researchWing") ? (
-                                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                                    <ChevronDown className="w-4 h-4 text-brand-muted" />
                                   ) : (
-                                    <ChevronRight className="w-4 h-4 text-gray-400" />
+                                    <ChevronRight className="w-4 h-4 text-brand-muted" />
                                   )}
                                 </button>
 
                                 {isCategoryExpanded("researchWing") && (
-                                  <div className="bg-gray-50 px-5">
-                                    {researchWingItems?.map((item) => (
+                                  <div className="bg-brand-surface/60">
+                                    {researchWingItems.map((item) => (
                                       <Link
                                         key={item.name}
                                         href={item.href}
+                                        onClick={() => setOpen(false)}
                                         className={cn(
-                                          "block px-5 py-2 text-sm transition-colors duration-200 border-b border-gray-300 last:border-b-0",
+                                          "block px-8 py-2.5 text-sm border-b border-brand-border/40 last:border-b-0 transition-colors",
                                           isActive(item.href)
                                             ? "text-brand-secondary font-medium"
-                                            : "text-gray-600 hover:text-brand-secondary"
+                                            : "text-brand-muted hover:text-brand-secondary"
                                         )}
-                                        onClick={() => setOpen(false)}
                                       >
                                         {item.name}
                                       </Link>
@@ -354,23 +305,10 @@ const Navbar = () => {
                       </nav>
                     </div>
 
-                    {/* Footer */}
-                    <div className="p-4 border-t border-gray-200">
-                      <div className="text-xs text-gray-500 text-center">
-                        <p>
-                          © {new Date().getFullYear()} - ResearchUstad - All
-                          Rights Reserved. Developed by
-                          <span className="font-bold hover:underline text-brand-secondary ml-1">
-                            <a
-                              href="https://www.flexsoftr.com/"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              Flex Softr
-                            </a>
-                          </span>
-                        </p>
-                      </div>
+                    <div className="p-4 border-t border-brand-border">
+                      <p className="text-xs text-brand-muted text-center">
+                        © {new Date().getFullYear()} ResearchUstad
+                      </p>
                     </div>
                   </div>
                 </SheetContent>

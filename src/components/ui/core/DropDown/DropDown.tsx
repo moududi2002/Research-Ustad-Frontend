@@ -4,6 +4,7 @@ import Link from "next/link";
 import * as React from "react";
 import { usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
+import {Sparkles} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -63,6 +64,15 @@ export function DroopDown() {
             >
               Home
             </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <Link
+            href="/services"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#093a5a] to-[#087e55] px-4 py-3 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
+          >
+            <Sparkles className="h-4 w-4" /> Our Services
           </Link>
         </NavigationMenuItem>
 

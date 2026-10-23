@@ -1,18 +1,20 @@
-import { Button } from "@/components/ui/button";
+//src/components/home/ServiceSection.tsx
+import { Button } from "@/components/ui/core";
 import {
   BookOpen,
-  Globe,
-  GraduationCap,
   TrendingUp,
+  GraduationCap,
+  Globe,
   ArrowRight,
 } from "lucide-react";
 import { Container, SectionHeader } from "@/components/ui/core";
+import { Reveal } from "@/components/ui/Reveal";
 import Link from "next/link";
 
 const wings = [
   {
     icon: BookOpen,
-    title: "Research ",
+    title: "Research",
     description:
       "Engage in ongoing innovative research initiatives and contribute to scholarly publications.",
     features: [
@@ -21,12 +23,12 @@ const wings = [
       "Academic Publications",
       "International Conferences",
     ],
-    status: "Active",
+    status: "Active" as const,
     link: "/allpapers",
   },
   {
     icon: TrendingUp,
-    title: "Trending ",
+    title: "Trending",
     description:
       "Specialized training courses in the most in-demand technologies and skills.",
     features: [
@@ -35,12 +37,12 @@ const wings = [
       "Data Science",
       "LLM & ChatGPT",
     ],
-    status: "Active",
+    status: "Active" as const,
     link: "/trending",
   },
   {
     icon: GraduationCap,
-    title: "Higher Study ",
+    title: "Higher Study",
     description:
       "Resources and guidance for international education and scholarship opportunities.",
     features: [
@@ -49,12 +51,12 @@ const wings = [
       "University Guidance",
       "Application Support",
     ],
-    status: "Coming Soon",
+    status: "Coming Soon" as const,
     link: "/higher-study",
   },
   {
     icon: Globe,
-    title: "Language ",
+    title: "Language",
     description:
       "Language proficiency training for global academic and professional opportunities.",
     features: [
@@ -63,122 +65,78 @@ const wings = [
       "Academic Writing",
       "Communication Skills",
     ],
-    status: "Coming Soon",
+    status: "Coming Soon" as const,
     link: "/language",
   },
 ];
 
 const ServicesSection = () => {
   return (
-    <section className=" bg-gradient-to-br from-gray-50 via-white to-gray-50 relative overflow-hidden">
+    <section className="py-20 lg:py-28 bg-brand-surface">
       <Container>
         <SectionHeader
-          title="Our Wings"
+          title="Our Research Wings"
           description="Explore our specialized programs designed to support your academic journey and professional development."
         />
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4 items-stretch">
-          {wings?.map((wing, index) => (
-            <div
-              key={index}
-              className="group relative bg-white shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 rounded-2xl p-6 overflow-hidden h-full flex flex-col"
-            >
-              {/* Visible Hover Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div
-                  className={`absolute inset-0 rounded-2xl ${
-                    index === 0
-                      ? "bg-blue-100/80"
-                      : index === 1
-                      ? "bg-orange-100/80"
-                      : index === 2
-                      ? "bg-purple-100/80"
-                      : "bg-green-100/80"
-                  }`}
-                ></div>
-              </div>
-              {/* Content */}
-              <div className="relative z-10 flex h-full flex-col">
-                {/* Header */}
-                <div className="flex items-center gap-4 mb-6">
-                  <div
-                    className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:shadow-lg ${
-                      index === 0
-                        ? "bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300"
-                        : index === 1
-                        ? "bg-gradient-to-br from-orange-100 to-orange-200 group-hover:from-orange-200 group-hover:to-orange-300"
-                        : index === 2
-                        ? "bg-gradient-to-br from-purple-100 to-purple-200 group-hover:from-purple-200 group-hover:to-purple-300"
-                        : "bg-gradient-to-br from-green-100 to-green-200 group-hover:from-green-200 group-hover:to-green-300"
-                    }`}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-14">
+          {wings.map((wing, idx) => (
+            <Reveal key={wing.title} delay={idx * 80}>
+              <div className="group relative h-full bg-white border border-brand-border rounded-2xl p-6 flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-20px_rgba(30,58,95,0.25)] hover:border-brand-secondary/40">
+                {/* Status chip */}
+                <div className="absolute top-4 right-4">
+                  <span
+                    className={
+                      wing.status === "Active"
+                        ? "text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200"
+                        : "text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200"
+                    }
                   >
-                    <wing.icon
-                      className={`h-8 w-8 ${
-                        index === 0
-                          ? "text-blue-600 group-hover:text-blue-700"
-                          : index === 1
-                          ? "text-orange-600 group-hover:text-orange-700"
-                          : index === 2
-                          ? "text-purple-600 group-hover:text-purple-700"
-                          : "text-green-600 group-hover:text-green-700"
-                      }`}
-                    />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 group-hover:text-gray-800 transition-colors duration-300">
-                    {wing.title}
-                  </h3>
+                    {wing.status}
+                  </span>
                 </div>
 
+                {/* Icon */}
+                <div className="w-14 h-14 rounded-xl bg-brand-surface border border-brand-border flex items-center justify-center mb-5 transition-all duration-300 group-hover:bg-brand-primary group-hover:border-brand-primary">
+                  <wing.icon className="w-6 h-6 text-brand-primary transition-colors duration-300 group-hover:text-white" />
+                </div>
+
+                {/* Title */}
+                <h3 className="text-lg font-bold text-brand-primary mb-2">
+                  {wing.title}
+                </h3>
+
                 {/* Description */}
-                <p className="text-gray-600 mb-6 text-base leading-relaxed group-hover:text-gray-700 text-justify transition-colors duration-300">
+                <p className="text-sm text-brand-muted leading-relaxed mb-5">
                   {wing.description}
                 </p>
 
-                {/* Features List */}
-                <ul className="space-y-3 mb-8">
-                  {wing.features?.map((feature, featureIndex) => (
+                {/* Features */}
+                <ul className="space-y-2.5 mb-6 flex-1">
+                  {wing.features.map((feature) => (
                     <li
-                      key={featureIndex}
-                      className="flex items-center text-gray-700 text-sm"
+                      key={feature}
+                      className="flex items-start gap-2 text-sm text-brand-ink"
                     >
-                      <div
-                        className={`w-2 h-2 rounded-full mr-3 ${
-                          index === 0
-                            ? "bg-blue-500"
-                            : index === 1
-                            ? "bg-orange-500"
-                            : index === 2
-                            ? "bg-purple-500"
-                            : "bg-green-500"
-                        }`}
-                      ></div>
-                      {feature}
+                      <span className="mt-1.5 w-1 h-1 rounded-full bg-brand-secondary shrink-0" />
+                      <span>{feature}</span>
                     </li>
                   ))}
                 </ul>
 
-                {/* Action Button */}
-                <div className="flex w-full items-center justify-between pt-6 border-t border-gray-100 group-hover:border-gray-200 transition-colors duration-300 mt-auto">
-                  <Link href={wing.link} className="w-full">
-                    <Button className="w-full cursor-pointer text-sm font-semibold px-4 py-2 h-auto bg-brand-primary hover:bg-brand-primary/90 text-white transition-all duration-300">
-                      Explore Now
-                    </Button>
-                  </Link>
-
-                  {/* Hover Indicator */}
-                  <div
-                    className={`w-2 h-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 ${
-                      index === 0
-                        ? "bg-blue-500"
-                        : index === 1
-                        ? "bg-orange-500"
-                        : index === 2
-                        ? "bg-purple-500"
-                        : "bg-green-500"
-                    }`}
-                  ></div>
-                </div>
+                {/* CTA */}
+                <Link href={wing.link} className="mt-auto">
+                  <Button
+                    variant="outline"
+                    size="md"
+                    className="w-full group/btn justify-between"
+                  >
+                    Explore Now
+                    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                  </Button>
+                </Link>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </Container>
